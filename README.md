@@ -17,7 +17,7 @@ So far, Mac (x86) and Linux (x86) are supported, with completions for zsh and ba
 
 ## Installation
 
-For all methods, you can set up `cachix use kubukoz` to benefit from a binary cache (mac only)
+For all methods, you can set up `cachix use kubukoz` to benefit from a binary cache.
 
 ### Easy (latest version)
 
