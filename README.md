@@ -8,7 +8,7 @@ The tags in this repository will correspond to: `v<version of scala-cli>-<releas
 
 <!-- `$ git tag --sort=authordate | tail -n 1` -->
 ```
-v0.0.7-1
+v0.0.7-2
 ```
 
 ## System support
