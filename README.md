@@ -15,7 +15,7 @@ So far, only Mac is supported, with completions for zsh and bash. Contributions 
 ### Easy (latest version)
 
 ```shell
-nix-env -iA niv -f https://github.com/kubukoz/scala-cli/tarball/main
+nix-env -if https://github.com/kubukoz/scala-cli.nix/archive/refs/heads/main.tar.gz
 ```
 
 ### For NixOS/Home Manager users
