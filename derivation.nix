@@ -1,11 +1,20 @@
-{ stdenv, coreutils, lib, installShellFiles, jre, system, autoPatchelfHook, zlib }:
+{ stdenv, coreutils, lib, installShellFiles, system, zlib, autoPatchelfHook, makeSetupHook }:
 let
   version = "0.0.7";
 in
 stdenv.mkDerivation {
   name = "scala-cli";
   inherit version;
-  buildInputs = [ coreutils installShellFiles ];
+  buildInputs = let
+    # Implemented as a custom setup hook because autopatchelf needs to run first.
+    # if you know how to do this without a custom setup hook, please let me know.
+    completionsHook = makeSetupHook { name = "completions-hook"; deps = [ installShellFiles ]; } ./completions-hook.sh;
+  in
+    [
+      coreutils
+      autoPatchelfHook
+      completionsHook
+    ];
   src =
     let
       asset = {
@@ -13,7 +22,6 @@ stdenv.mkDerivation {
           asset = "scala-cli-x86_64-apple-darwin.gz";
           sha256 = "0v6vlmw1zrzvbpa59y4cfv74mx56lyx109vk9cb942pyiv0ia6gf";
         };
-        # doesn't work so far
         x86_64-linux = {
           asset = "scala-cli-x86_64-pc-linux.gz";
           sha256 = "1xdkvjfw550lpjw5fsrv7mbnx5i8ix8lrxcd31yipm8p9g4vjcdn";
@@ -28,38 +36,17 @@ stdenv.mkDerivation {
     cat $src | gzip -d > scala-cli
   '';
 
-  propagatedBuildInputs = [ jre ];
+  nativeBuildInputs = [
+    zlib
+    stdenv.cc.cc
+  ];
 
   installPhase =
-    let
-      # we prepare our library path in the let clause to avoid it become part of the input of mkDerivation
-      libPath = lib.makeLibraryPath [
-        stdenv.cc.cc.lib
-        zlib
-      ];
-      fixBinary =
-        if builtins.currentSystem == "x86_64-linux" then
-          ''
-            patchelf \
-              --set-interpreter "$(cat $NIX_CC/nix-support/dynamic-linker)" \
-              --set-rpath "${libPath}" \
-              $out/bin/scala-cli
-          '' else "";
-    in
-      ''
+    ''
+      #
         mkdir -p "$out/bin"
         chmod 755 scala-cli
         cp scala-cli "$out/bin/"
-        ${fixBinary}
-
-        # hack to ensure the completion function looks right
-        PATH="$out/bin:$PATH"
-
-        for shell in zsh bash; do
-          scala-cli completions "$shell" > "completions_$shell"
-          installShellCompletion --name _scala-cli "--$shell" "completions_$shell"
-          echo "installed completions for $shell"
-        done
-      '';
+    '';
 
 }
