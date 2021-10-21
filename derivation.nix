@@ -14,10 +14,10 @@ stdenv.mkDerivation {
           sha256 = "0v6vlmw1zrzvbpa59y4cfv74mx56lyx109vk9cb942pyiv0ia6gf";
         };
         # doesn't work so far
-        # x86_64-linux = {
-        #   asset = "scala-cli-x86_64-pc-linux.gz";
-        #   sha256 = "1xdkvjfw550lpjw5fsrv7mbnx5i8ix8lrxcd31yipm8p9g4vjcdn";
-        # };
+        x86_64-linux = {
+          asset = "scala-cli-x86_64-pc-linux.gz";
+          sha256 = "1xdkvjfw550lpjw5fsrv7mbnx5i8ix8lrxcd31yipm8p9g4vjcdn";
+        };
       }."${system}";
     in
       builtins.fetchurl {
