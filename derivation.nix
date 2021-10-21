@@ -1,4 +1,4 @@
-{ stdenv, coreutils, installShellFiles, jre, system }:
+{ stdenv, coreutils, lib, installShellFiles, jre, system, autoPatchelfHook, zlib }:
 let
   version = "0.0.7";
 in
@@ -30,19 +30,36 @@ stdenv.mkDerivation {
 
   propagatedBuildInputs = [ jre ];
 
-  installPhase = ''
-    chmod +x scala-cli
-    mkdir -p "$out/bin"
-    cp scala-cli "$out/bin/"
+  installPhase =
+    let
+      # we prepare our library path in the let clause to avoid it become part of the input of mkDerivation
+      libPath = lib.makeLibraryPath [
+        stdenv.cc.cc.lib
+        zlib
+      ];
+      fixBinary =
+        if builtins.currentSystem == "x86_64-linux" then
+          ''
+            patchelf \
+              --set-interpreter "$(cat $NIX_CC/nix-support/dynamic-linker)" \
+              --set-rpath "${libPath}" \
+              $out/bin/scala-cli
+          '' else "";
+    in
+      ''
+        mkdir -p "$out/bin"
+        chmod 755 scala-cli
+        cp scala-cli "$out/bin/"
+        ${fixBinary}
 
-    # hack to ensure the completion function looks right
-    PATH="$out/bin:$PATH"
+        # hack to ensure the completion function looks right
+        PATH="$out/bin:$PATH"
 
-    for shell in zsh bash; do
-      scala-cli completions "$shell" > "completions_$shell"
-      installShellCompletion --name _scala-cli "--$shell" "completions_$shell"
-      echo "installed completions for $shell"
-    done
-  '';
+        for shell in zsh bash; do
+          scala-cli completions "$shell" > "completions_$shell"
+          installShellCompletion --name _scala-cli "--$shell" "completions_$shell"
+          echo "installed completions for $shell"
+        done
+      '';
 
 }
