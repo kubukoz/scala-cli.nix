@@ -19,3 +19,5 @@ jobs:
         name: kubukoz
         authToken: '${{ secrets.CACHIX_AUTH_TOKEN }}'
     - run: nix-build
+    - name: Test
+      run: ./result/bin/scala-cli about
