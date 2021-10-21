@@ -13,11 +13,11 @@ v0.0.7-1
 
 ## System support
 
-So far, only Mac is supported, with completions for zsh and bash. Contributions for Linux support welcome.
+So far, Mac (x86) and Linux (x86) are supported, with completions for zsh and bash.
 
 ## Installation
 
-For all methods, you can set up `cachix use kubukoz` to benefit from a binary cache.
+For all methods, you can set up `cachix use kubukoz` to benefit from a binary cache (mac only)
 
 ### Easy (latest version)
 
