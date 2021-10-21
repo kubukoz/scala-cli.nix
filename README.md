@@ -12,6 +12,8 @@ So far, only Mac is supported, with completions for zsh and bash. Contributions 
 
 ## Installation
 
+For all methods, you can set up `cachix use kubukoz` to benefit from a binary cache.
+
 ### Easy (latest version)
 
 ```shell
