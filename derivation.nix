@@ -43,10 +43,9 @@ stdenv.mkDerivation {
 
   installPhase =
     ''
-      #
-        mkdir -p "$out/bin"
-        chmod 755 scala-cli
-        cp scala-cli "$out/bin/"
+      mkdir -p "$out/bin"
+      chmod 755 scala-cli
+      cp scala-cli "$out/bin/"
     '';
 
 }
