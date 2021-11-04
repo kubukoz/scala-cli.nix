@@ -4,8 +4,6 @@
 
 This repository is no longer active! The scala-cli derivation is now available in [Nixpkgs](https://github.com/NixOS/nixpkgs) as `scala-cli`.
 
-While the package isn't part of a channel, you can use `cachix use kubukoz` to benefit from a binary cache.
-
 ## Quick install
 
 ```
